@@ -1,0 +1,20 @@
+apiVersion: v2
+name: go-kube-downscaler
+description: A Helm chart for deploying the go-kube-downscaler
+type: application
+keywords:
+  - kube-downscaler
+  - go
+  - downscaling
+version: 1.2.1
+appVersion: 1.2.1
+icon: https://raw.githubusercontent.com/caas-team/GoKubeDownscaler/refs/heads/main/logo/kubedownscaler.svg
+sources:
+  - https://github.com/sparklingca/GoKubeDownscaler
+maintainers:
+  - name: jonathan-mayer
+    email: jonathan.mayer@telekom.de
+    url: https://github.com/jonathan-mayer
+  - name: JTaeuber
+    email: jan.taeuber@telekom.de
+    url: https://github.com/JTaeuber

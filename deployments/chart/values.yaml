@@ -1,0 +1,83 @@
+# If replicaCount is greater than 1, leader election is enabled by default
+replicaCount: 1
+
+image:
+  repository: ghcr.io/caas-team/gokubedownscaler
+  pullPolicy: IfNotPresent
+  tag: "" # Defaults to appVersion
+
+imagePullSecrets: []
+
+arguments:
+#  - --interval=60
+
+includedResources:
+  - deployments
+#  - statefulsets
+#  - daemonsets
+#  - rollouts
+#  - horizontalpodautoscalers
+#  - jobs
+#  - cronjobs
+#  - scaledobjects
+#  - stacks
+#  - poddisruptionbudgets
+#  - prometheuses
+
+fullnameOverride: ""
+nameOverride: ""
+
+constrainedNamespaces: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podSecurityContext:
+  runAsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  supplementalGroups: [1000]
+
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 900Mi
+  requests:
+    cpu: 200m
+    memory: 300Mi
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+excludedNamespaces:
+  - kube-downscaler
+  - kube-system
+
+configMap:
+  name: go-kube-downscaler
+  # extraConfig adds lines to the configmap
+  # e.g.:
+  # extraConfig: |
+  #   DOWNSCALE_PERIOD: "Mon-Sun 19:00-20:00 Europe/Berlin"
+  extraConfig: ""
+
+# Force pod restart when the configuration changes
+forceRestartOnConfigChange: true
