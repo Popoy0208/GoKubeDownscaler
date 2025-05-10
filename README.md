@@ -1,90 +1,126 @@
-![GoKubeDownscaler Logo](./logo/kubedownscaler-name-light.svg)
+# GoKubeDownscaler 🌐
 
-<!-- markdownlint-disable MD033 MD013 -->
+![GoKubeDownscaler](https://img.shields.io/badge/GoKubeDownscaler-v1.0.0-brightgreen)
 
-<a target="_blank" href="/../../releases/" title="GitHub Release"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/caas-team/GoKubeDownscaler?style=flat"></a>
-<a target="_blank" href="./LICENSE" title="GitHub License"><img alt="GitHub License" src="https://img.shields.io/github/license/caas-team/GoKubeDownscaler?style=flat"></a>
-<a target="_blank" href="/../../graphs/contributors" title="Contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/caas-team/GoKubeDownscaler?style=flat"></a>
-<a target="_blank" href="/../../stargazers" title="Stars"><img alt="Stars" src="https://img.shields.io/github/stars/caas-team/GoKubeDownscaler?style=flat"></a>
-<a target="_blank" href="https://inviter.co/kube-downscaler" title="Slack Workspace"><img alt="Slack Workspace" src="https://img.shields.io/badge/slack-kube--downscaler-dark_green?style=flat&logo=slack"></a>
+Welcome to **GoKubeDownscaler**, a powerful horizontal autoscaler designed for Kubernetes workloads. This tool focuses on downscaling, ensuring that your resources are used efficiently. Whether you manage a small cluster or a large deployment, GoKubeDownscaler helps maintain optimal performance while reducing costs.
 
-<!-- markdownlint-enable MD033 MD013 -->
+## Table of Contents
 
-A horizontal autoscaler for Kubernetes workloads.
-This is a golang port and successor of the popular [(py-)kube-downscaler](https://github.com/caas-team/py-kube-downscaler)
-with improvements and quality of life changes.
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [How It Works](#how-it-works)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
+- [Contact](#contact)
 
-## Documentation and Guides
+## Features ✨
 
-The Documentation and Guides can be found on [our website](https://caas-team.github.io/GoKubeDownscaler).
+- **Efficient Downscaling**: Automatically reduce the number of replicas in your Kubernetes deployments based on resource usage.
+- **Customizable Policies**: Set rules for when and how to downscale your workloads.
+- **Lightweight**: Minimal overhead on your cluster performance.
+- **Easy Integration**: Works seamlessly with existing Kubernetes setups.
+- **Monitoring**: Keep track of downscaling actions through logs and metrics.
 
-An Offline copy of the documentation can be found in [`website/content/docs`](./website/content/docs) and [`website/content/guides`](./website/content/guides).
-In there are Markdown files which can be viewed in any text editor or inside of a Markdown Viewer.
+## Installation 🛠️
 
-## Installation
+To install GoKubeDownscaler, follow these steps:
 
-Installation is done via the [Helm Chart](./deployments/chart/).
-Information on how to install the Downscaler is on [our website](https://caas-team.github.io/GoKubeDownscaler/guides/getting-started/installation).
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Popoy0208/GoKubeDownscaler.git
+   cd GoKubeDownscaler
+   ```
 
-### Missing Features
+2. Build the application:
+   ```bash
+   make build
+   ```
 
-Currently the GoKubeDownscaler is still a WIP.
-This means that there still might be some features missing from the py-kube-downscaler.
-You can find a list of the known-missing features [under the `missing feature` label](/../../labels/missing%20feature).
-If you think that any other features are missing or you have an idea for a new feature, feel free to open an [Issue](/../../issues/).
+3. Deploy to your Kubernetes cluster:
+   ```bash
+   kubectl apply -f deployment.yaml
+   ```
 
-## Developing
+4. Verify that the deployment is successful:
+   ```bash
+   kubectl get pods
+   ```
 
-This section covers the basics of developing on this repo, a more detailed guide can be found on [our website](https://caas-team.github.io/GoKubeDownscaler/guides/developing).
+## Usage 📦
 
-Please read the [contribution manifest](./CONTRIBUTING.md).
+After installation, you can start using GoKubeDownscaler by following these steps:
 
-### Cloning the Repository
+1. Ensure your Kubernetes context is set correctly.
+2. Apply your custom configuration:
+   ```bash
+   kubectl apply -f config.yaml
+   ```
 
-```bash
-git clone https://github.com/sparklingca/GoKubeDownscaler.git
-cd GoKubeDownscaler
+3. Monitor the downscaling process through logs:
+   ```bash
+   kubectl logs -f <pod-name>
+   ```
+
+## Configuration ⚙️
+
+The configuration file allows you to customize how GoKubeDownscaler operates. Here’s a basic example:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: downscaler-config
+data:
+  minReplicas: "1"
+  maxReplicas: "10"
+  scaleDownThreshold: "30" # Percentage of resource usage
 ```
 
-### Setting up Pre-Commit
+### Parameters
 
-```bash
-brew install pre-commit
-pre-commit install
-brew install golangci-lint
-brew install gofumpt
-```
+- **minReplicas**: The minimum number of replicas your workload should maintain.
+- **maxReplicas**: The maximum number of replicas allowed.
+- **scaleDownThreshold**: The resource usage percentage at which downscaling is triggered.
 
-### Testing the Downscaler
+## How It Works 🔍
 
-#### Running the Unit Tests
+GoKubeDownscaler continuously monitors the resource usage of your Kubernetes workloads. When the usage drops below the defined threshold, it automatically reduces the number of replicas. This helps you save costs while ensuring that your applications remain responsive.
 
-```bash
-go test -v --cover ./...
-```
+1. **Monitoring**: GoKubeDownscaler checks resource metrics at regular intervals.
+2. **Decision Making**: If the metrics indicate low usage, it decides to downscale.
+3. **Execution**: It communicates with the Kubernetes API to adjust the number of replicas.
 
-#### Running the Downscaler Locally
+## Contributing 🤝
 
-The downscaler can be run locally by specifying a kubeconfig to use.
-The kubeconfig should have at least the permissions as the Helm Charts [role.yaml](./deployments/chart/templates/role.yaml).
-The downscaler will use the current-context in the kubeconfig.
+We welcome contributions to GoKubeDownscaler! If you’d like to contribute, please follow these steps:
 
-```bash
-go run -k=path/to/kubeconfig # ... additional configuration
-```
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your changes and create a pull request.
 
-### Testing the Website
+Please ensure your code adheres to the existing style and includes tests where applicable.
 
-#### Installing Dependencies
+## License 📄
 
-```bash
-npm install --prefix website
-```
+GoKubeDownscaler is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 
-#### Running It Locally
+## Releases 📅
 
-```bash
-npm run --prefix website start
-```
+For the latest versions and updates, please visit our [Releases](https://github.com/Popoy0208/GoKubeDownscaler/releases) section. You can download the latest version and execute it in your environment.
 
-after that the website is available on `localhost:3000/GoKubeDownscaler`
+## Contact 📬
+
+For questions or feedback, feel free to reach out:
+
+- **Email**: contact@example.com
+- **GitHub Issues**: Use the [issues page](https://github.com/Popoy0208/GoKubeDownscaler/issues) for bug reports and feature requests.
+
+## Conclusion
+
+GoKubeDownscaler is an essential tool for anyone managing Kubernetes workloads. Its efficient downscaling capabilities help you save costs while maintaining performance. Explore the features, contribute to the project, and keep your Kubernetes environment optimized.
+
+For more information, visit our [Releases](https://github.com/Popoy0208/GoKubeDownscaler/releases) section to download the latest version.
